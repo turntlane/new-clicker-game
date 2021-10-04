@@ -1,25 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Timer from './timer'
+
+export class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      isActive: false,
+      clicks: 0,
+      timer: 5
+    }
+  }
+
+  clickCounter = () => {
+    let clicks = this.state.clicks
+    clicks += 1
+    this.setState({clicks: clicks})
+  }
+
+
+  handleTimer = () => {
+    this.setState({isActive: true})
+    this.interval =  setInterval(() => {
+        if(this.state.timer <= 1) {
+            clearInterval(this.interval)
+        }
+        console.log(this.interval)
+        this.setState(prevState => ({
+            timer: prevState.timer - 1
+        }))
+    }, 1000);
+    return () => {
+      clearInterval(this.interval)
+    }
+    }
+
+    resetTime = () => {
+      clearInterval(this.interval)
+      this.setState({
+        timer: 5,
+        clicks: 0,
+        isActive: false})
+    }
+
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.state.isActive ? this.clickCounter : this.handleTimer} disabled={this.state.timer === 0} >{this.state.clicks}</button>
+        {this.state.timer}
+        <button onClick={this.resetTime}></button>
+      </div>
+    )
+  }
 }
 
-export default App;
+export default App
+
