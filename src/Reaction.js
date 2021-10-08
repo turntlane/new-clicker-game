@@ -6,6 +6,7 @@ export class Reaction extends Component {
     super();
     this.state = {
       timer: 0,
+      interval: 0,
       isActive: false,
       bgColor: "",
     };
@@ -16,7 +17,6 @@ export class Reaction extends Component {
     console.log(this.state.isActive);
   };
 
-
   handleTimeOut = () => {
     this.setState({ bgColor: "red", isActive: false });
     let num = Math.floor(Math.random() * 5000);
@@ -25,18 +25,18 @@ export class Reaction extends Component {
 
   handleTimer = () => {
     this.interval = setInterval(() => {
-      console.log(this.interval);
       this.setState((prevState) => ({
         timer: prevState.timer + 1,
       }));
-    }, .100);
-    this.setState({bgColor: 'green'})
+    }, 0.1);
+    this.setState({ bgColor: "green" });
   };
 
   resetTimer = () => {
     this.setState({
-        bgColor: "green",
+      bgColor: "green",
       timer: this.state.timer,
+      isActive: false,
     });
     clearInterval(this.interval);
   };
@@ -51,27 +51,39 @@ export class Reaction extends Component {
   };
 
   render() {
+    let style = {};
     return (
-      <div className="content-container">
+      <div className="clicker-container">
         <Nav />
+        {/* <div className="start-btn-container" onClick={this.handleTimeOut}>
+          
+        </div> */}
+
         <button
           className="start-btn"
-          onClick={this.handleTimeOut}
-          onDoubleClick={this.resetTimer}
+          disabled={
+            this.state.bgColor === "" || this.state.bgColor === "cadetblue"
+          }
+          onClick={this.resetTimer}
+          onDoubleClick={this.clearTimer}
           style={{ backgroundColor: this.state.bgColor }}
         >
-          <h1>{this.state.timer} ms</h1>
-          {`Reaction Test:
-             When the red box turns green, click ASAP.
-              Click anywhere to start.`}
+          {this.state.bgColor === "red" ? "get ready..." : null}
+          {this.state.bgColor === "green" ? (
+            <p style={{whiteSpace: 'pre'}}> {`${this.state.timer}\nDouble Click To Restart`}</p>
+          ) : null}
+        </button>
 
-        </button>
-        {this.state.bgColor === 'green' && !this.state.isActive ? <button onClick={this.resetTimer}><h1>{this.state.timer} ms</h1></button> : null}
-        <button onClick={this.handleTimer} on onDoubleClick={this.resetTimer}>
-          Count
-        </button>
-        <button onClick={this.clearTimer}>
-          Reset
+        <button
+          className="other-btn"
+          onClick={this.handleTimeOut}
+          style={
+            this.state.bgColor === "green" || this.state.bgColor === "red"
+              ? { display: "none" }
+              : null
+          }
+        >
+          Click Here to begin
         </button>
       </div>
     );
